@@ -1,0 +1,22 @@
+image: rust:1.96
+
+pipelines:
+  default:
+    - step:
+        name: 'Build'
+        caches:
+          - cargo
+          - rootlocal
+        script:
+          - cargo install --version 0.15.0 typst-cli
+          - apt-get update
+          - apt-get install --assume-yes python3-pip ninja-build
+          - pip3 install --break-system-packages --user meson
+          - export PATH="/root/.local/bin:$PATH"
+          - meson setup builddir
+          - ninja -C builddir
+
+definitions:
+  caches:
+    cargo: /usr/local/cargo
+    rootlocal: /root/.local
